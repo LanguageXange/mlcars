@@ -10,9 +10,11 @@ class Car {
     this.acceleration = 0.02;
     this.maxSpeed = 6;
     this.friction = 0.008;
-    // more realistic left and right movement
+    // angle provides more realistic left and right movement
     this.angle = 0;
 
+    // sensor
+    this.sensor = new Sensor(this);
     // controls
     this.controls = new Controls();
   }
@@ -37,14 +39,16 @@ class Car {
     }
 
     // friction
+    let frictionFactor = this.controls.stop ? 6 : 1;
+
     if (this.speed > 0) {
-      this.speed -= this.friction;
+      this.speed -= this.friction * frictionFactor;
     }
     if (this.speed < 0) {
-      this.speed += this.friction;
+      this.speed += this.friction * frictionFactor;
     }
     // car is constantly moving if the speed is close to zero because of the friction - need to set speed to zero
-    if (Math.abs(this.speed) < this.friction || this.controls.stop) {
+    if (Math.abs(this.speed) < this.friction) {
       this.speed = 0;
     }
 
@@ -67,6 +71,7 @@ class Car {
 
   update() {
     this.#move();
+    this.sensor.update();
   }
 
   draw(ctx) {
@@ -80,5 +85,7 @@ class Car {
     ctx.fill();
 
     ctx.restore();
+
+    this.sensor.draw(ctx);
   }
 }
