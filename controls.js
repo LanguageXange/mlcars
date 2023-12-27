@@ -5,6 +5,9 @@ class Controls {
     this.left = false;
     this.right = false;
 
+    this.boost = false;
+    this.stop = false;
+
     this.#keyboardListener();
   }
 
@@ -24,8 +27,14 @@ class Controls {
       case "ArrowDown":
         this.backward = true;
         break;
+      case " ":
+        this.boost = true;
+        break;
+      case "a":
+        this.stop = true;
+        break;
     }
-    console.table(this);
+    //console.table(this);
   }
   #handleKeyUp(e) {
     switch (e.key) {
@@ -40,6 +49,12 @@ class Controls {
         break;
       case "ArrowDown":
         this.backward = false;
+        break;
+      case " ":
+        this.boost = false;
+        break;
+      case "a":
+        this.stop = false;
         break;
     }
   }
