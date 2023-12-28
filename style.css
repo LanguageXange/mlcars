@@ -1,10 +1,16 @@
 body {
   margin: 0;
   background: darkgray;
-  overflow: hidden;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-#myCanvas {
+
+#networkCanvas {
+  background: #222;
+}
+
+#carCanvas {
   background: lightgray;
 }
 
@@ -17,4 +23,29 @@ body {
   top: 5px;
   left: 35%;
   transform: translate(-35%);
+}
+
+.buttons-container {
+  display: flex;
+  margin: 0 50px;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: center;
+
+  button {
+    border: none;
+    outline: none;
+    font-size: 1.5rem;
+    border-radius: 15px;
+    padding: 5px 15px;
+    cursor: pointer;
+
+    &[data-type="save"] {
+      background-color: aquamarine;
+    }
+
+    &[data-type="discard"] {
+      background-color: tomato;
+    }
+  }
 }

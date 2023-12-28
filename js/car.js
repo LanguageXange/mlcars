@@ -16,9 +16,13 @@ class Car {
     // car damaged ( use car corner to detect)
     this.damaged = false;
 
+    // self driving car
+    this.useBrain = controlType === "AI";
+
     // sensor
     if (controlType !== "DUMMY") {
       this.sensor = new Sensor(this);
+      this.brain = new NeuralNetwork([this.sensor.rayCount, 6, 4]); // we can have as many layers as we want
     }
 
     // controls
@@ -84,6 +88,18 @@ class Car {
     }
     if (this.sensor) {
       this.sensor.update(roadBorders, traffic);
+      const offsets = this.sensor.readings.map((r) =>
+        r === null ? 0 : 1 - r.offset
+      ); // we want neuron to receive lower value when obstacle is still far away
+
+      const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+      // console.log(outputs); // array of zero or one currently values are random
+      if (this.useBrain) {
+        this.controls.forward = outputs[0];
+        this.controls.left = outputs[1];
+        this.controls.right = outputs[2];
+        this.controls.backward = outputs[3];
+      }
     }
   }
 
@@ -138,8 +154,8 @@ class Car {
     return points;
   }
 
-  draw(ctx, config = { color: "rgba(0,0,50,0.8)" }) {
-    const { color } = config;
+  draw(ctx, config = { color: "rgba(0,0,50,0.8)", drawSensor: false }) {
+    const { color, drawSensor } = config;
     // draw rectangle car ( initial approach )
     // ctx.beginPath();
     // ctx.save();
@@ -166,7 +182,7 @@ class Car {
 
     ctx.fill();
 
-    if (this.sensor) {
+    if (this.sensor && drawSensor) {
       this.sensor.draw(ctx);
     }
   }
