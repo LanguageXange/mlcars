@@ -154,7 +154,7 @@ class Car {
     return points;
   }
 
-  draw(ctx, config = { color: "rgba(0,0,50,0.8)", drawSensor: false }) {
+  draw(ctx, config = { color: "rgba(0,0,50,0.5)", drawSensor: false }) {
     const { color, drawSensor } = config;
     // draw rectangle car ( initial approach )
     // ctx.beginPath();
@@ -182,6 +182,7 @@ class Car {
 
     ctx.fill();
 
+    // we only want to draw sensor for the best car
     if (this.sensor && drawSensor) {
       this.sensor.draw(ctx);
     }
