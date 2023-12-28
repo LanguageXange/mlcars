@@ -9,7 +9,12 @@ body {
 }
 
 .speed-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   position: absolute;
+  font-size: 2rem;
   top: 5px;
-  left: 5px;
+  left: 35%;
+  transform: translate(-35%);
 }

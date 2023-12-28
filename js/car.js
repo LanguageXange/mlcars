@@ -1,5 +1,5 @@
 class Car {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, controlType = "DUMMY", maxSpeed = 6) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -8,7 +8,7 @@ class Car {
     // more realistic forward backward car movement
     this.speed = 0;
     this.acceleration = 0.02;
-    this.maxSpeed = 6;
+    this.maxSpeed = maxSpeed;
     this.friction = 0.008;
     // angle provides more realistic left and right movement
     this.angle = 0;
@@ -17,9 +17,12 @@ class Car {
     this.damaged = false;
 
     // sensor
-    this.sensor = new Sensor(this);
+    if (controlType !== "DUMMY") {
+      this.sensor = new Sensor(this);
+    }
+
     // controls
-    this.controls = new Controls();
+    this.controls = new Controls(controlType);
   }
   #move() {
     let factor = this.controls.boost ? 4 : 1;
@@ -72,20 +75,29 @@ class Car {
     this.y -= Math.cos(this.angle) * this.speed;
   }
 
-  update(roadBorders) {
+  update(roadBorders, traffic) {
     // only move the car if it's not damaged
     if (!this.damaged) {
       this.#move();
       this.polygon = this.#createPolygon(); // array of corner points of the car [{x,y}, {x,y},...]
-      this.damaged = this.#assessDamage(roadBorders);
+      this.damaged = this.#assessDamage(roadBorders, traffic);
     }
-    this.sensor.update(roadBorders);
+    if (this.sensor) {
+      this.sensor.update(roadBorders, traffic);
+    }
   }
 
-  #assessDamage(roadBorders) {
+  #assessDamage(roadBorders, traffic) {
     for (let i = 0; i < roadBorders.length; i++) {
       // detect if the car polygon intersects with road border line segment
       if (polysIntersect(this.polygon, roadBorders[i])) {
+        return true;
+      }
+    }
+    // traffic is simply an array of cars
+    for (let i = 0; i < traffic.length; i++) {
+      // detect if the car polygon intersects with another car polygon
+      if (polysIntersect(this.polygon, traffic[i].polygon)) {
         return true;
       }
     }
@@ -126,7 +138,8 @@ class Car {
     return points;
   }
 
-  draw(ctx) {
+  draw(ctx, config = { color: "rgba(0,0,50,0.8)" }) {
+    const { color } = config;
     // draw rectangle car ( initial approach )
     // ctx.beginPath();
     // ctx.save();
@@ -138,9 +151,9 @@ class Car {
     // ctx.restore();
 
     if (this.damaged) {
-      ctx.fillStyle = "rgba(255,0,0,0.7)";
+      ctx.fillStyle = "rgba(250,0,0,0.8)";
     } else {
-      ctx.fillStyle = "rgba(0,0,0,0.7)";
+      ctx.fillStyle = color;
     }
     // draw polygon ( using car corner point)
     ctx.beginPath();
@@ -153,6 +166,8 @@ class Car {
 
     ctx.fill();
 
-    this.sensor.draw(ctx);
+    if (this.sensor) {
+      this.sensor.draw(ctx);
+    }
   }
 }

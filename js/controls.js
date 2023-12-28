@@ -1,5 +1,5 @@
 class Controls {
-  constructor() {
+  constructor(type) {
     this.forward = false;
     this.backward = false;
     this.left = false;
@@ -8,7 +8,14 @@ class Controls {
     this.boost = false;
     this.stop = false;
 
-    this.#keyboardListener();
+    switch (type) {
+      case "KEYS":
+        this.#keyboardListener();
+        break;
+      default:
+        this.forward = true;
+        break;
+    }
   }
 
   // private method
