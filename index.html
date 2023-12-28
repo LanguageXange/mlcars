@@ -7,18 +7,26 @@
   </head>
   <body>
     <div class="speed-container">
+      <div>Sample Size: <span>150</span></div>
       <div>Speed: <span id="speed"></span></div>
 
       <div>Status: <span id="status"></span></div>
     </div>
 
-    <canvas id="myCanvas"></canvas>
+    <canvas id="carCanvas"></canvas>
+    <div class="buttons-container">
+      <button id="save-btn" data-type="save">save</button>
+      <button id="discard-btn" data-type="discard">discard</button>
+    </div>
+    <canvas id="networkCanvas"></canvas>
     <script src="js/utils.js"></script>
     <script src="js/sensor.js"></script>
     <script src="js/grid.js"></script>
     <script src="js/road.js"></script>
     <script src="js/controls.js"></script>
     <script src="js/car.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/visualizer.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
